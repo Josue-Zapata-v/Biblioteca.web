@@ -1,0 +1,82 @@
+@model Biblioteca.Web.Models.Libro
+
+@{
+    ViewData["Title"] = "Detalle del Libro";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center mb-3">
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary me-3">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+            <div>
+                <h2 class="h4 fw-bold mb-0">Detalle del Libro</h2>
+                <span class="text-muted small">Información del registro en el catálogo</span>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-sm-6">
+                        <label class="text-muted small text-uppercase fw-semibold d-block mb-1">Título de la Obra</label>
+                        <div class="fs-5 fw-bold text-dark">@Model.Titulo</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="text-muted small text-uppercase fw-semibold d-block mb-1">Código ISBN</label>
+                        <span class="font-monospace fs-6 bg-light text-secondary border rounded px-2.5 py-1">@Model.ISBN</span>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="text-muted small text-uppercase fw-semibold d-block mb-1">Autor</label>
+                        <div class="fs-6 text-secondary">
+                            <i class="bi bi-person me-1"></i>@(Model.AutorNombre ?? "No asignado")
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="text-muted small text-uppercase fw-semibold d-block mb-1">Ejemplares Registrados</label>
+                        @if (Model.Ejemplares > 0)
+                        {
+                            <span class="badge badge-soft-success rounded-pill px-3 py-1.5 fs-6">
+                                <i class="bi bi-check-circle me-1"></i>@Model.Ejemplares disponibles
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-soft-danger rounded-pill px-3 py-1.5 fs-6">
+                                <i class="bi bi-exclamation-circle me-1"></i>0 unidades
+                            </span>
+                        }
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="text-muted small text-uppercase fw-semibold d-block mb-1">Estado de Ficha</label>
+                        <span class="badge badge-soft-primary rounded-pill px-3 py-1.5">
+                            @(Model.Activo ? "Activo en catálogo" : "Inactivo")
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="text-muted small text-uppercase fw-semibold d-block mb-1">Identificador del Sistema</label>
+                        <span class="text-muted font-monospace">LibroID #@Model.LibroId</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al listado
+                </a>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.LibroId" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.LibroId" class="btn btn-outline-danger">
+                        <i class="bi bi-trash3"></i> Eliminar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,94 @@
+@model IEnumerable<Biblioteca.Web.Models.Socio>
+
+@{
+    ViewData["Title"] = "Socios de la Biblioteca";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1 text-dark">Listado de Socios</h1>
+        <p class="text-muted small mb-0">Directorio de miembros y lectores activos habilitados</p>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-person-plus"></i>
+            <span>Nuevo Socio</span>
+        </a>
+    </div>
+</div>
+
+@if (TempData["Mensaje"] != null)
+{
+    var tipoMensaje = TempData["TipoMensaje"] ?? "info";
+    <div class="alert alert-@tipoMensaje alert-dismissible d-flex align-items-center fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill fs-5 me-2"></i>
+        <div>@TempData["Mensaje"]</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+<div class="card shadow-sm overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 80px;">ID</th>
+                    <th scope="col" style="width: 140px;">DNI</th>
+                    <th scope="col">Nombre y Apellidos</th>
+                    <th scope="col">Correo Electrónico</th>
+                    <th scope="col" style="width: 140px;" class="text-end">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var socio in Model)
+                    {
+                        <tr>
+                            <td class="text-secondary small font-monospace">#@socio.SocioId</td>
+                            <td>
+                                <span class="font-monospace small bg-light text-secondary border rounded px-2 py-0.5">
+                                    <i class="bi bi-person-vcard me-1"></i>@socio.DNI
+                                </span>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark">@socio.Nombre</div>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(socio.Email))
+                                {
+                                    <a href="mailto:@socio.Email" class="text-decoration-none text-secondary">
+                                        <i class="bi bi-envelope me-1"></i>@socio.Email
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Sin correo</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <span class="badge badge-soft-success rounded-pill px-2.5 py-1">
+                                    <i class="bi bi-check2 me-1"></i>Activo
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <h6 class="fw-semibold text-secondary mb-1">No hay socios registrados</h6>
+                                <p class="text-muted small mb-0">Comience agregando el primer socio activo mediante el botón superior.</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

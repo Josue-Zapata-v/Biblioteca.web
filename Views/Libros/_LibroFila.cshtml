@@ -1,0 +1,41 @@
+@model Biblioteca.Web.Models.Libro
+
+<tr>
+    <td class="text-secondary small font-monospace">#@Model.LibroId</td>
+    <td>
+        <div class="fw-semibold text-dark">@Model.Titulo</div>
+    </td>
+    <td>
+        <span class="font-monospace small bg-light text-secondary border rounded px-2 py-0.5">@Model.ISBN</span>
+    </td>
+    <td>
+        <span class="text-secondary">@(Model.AutorNombre ?? "No asignado")</span>
+    </td>
+    <td>
+        @if (Model.Ejemplares > 0)
+        {
+            <span class="badge badge-soft-success rounded-pill px-2.5 py-1">
+                @Model.Ejemplares @(Model.Ejemplares == 1 ? "ejemplar" : "ejemplares")
+            </span>
+        }
+        else
+        {
+            <span class="badge badge-soft-danger rounded-pill px-2.5 py-1">
+                Agotado (0)
+            </span>
+        }
+    </td>
+    <td class="text-end">
+        <div class="btn-group btn-group-sm" role="group">
+            <a asp-action="Details" asp-route-id="@Model.LibroId" class="btn btn-outline-secondary" title="Ver detalles">
+                <i class="bi bi-eye"></i> Detalle
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.LibroId" class="btn btn-outline-primary" title="Editar información">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.LibroId" class="btn btn-outline-danger" title="Dar de baja">
+                <i class="bi bi-trash3"></i> Eliminar
+            </a>
+        </div>
+    </td>
+</tr>

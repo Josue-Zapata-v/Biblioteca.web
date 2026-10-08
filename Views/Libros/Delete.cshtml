@@ -1,0 +1,68 @@
+@model Biblioteca.Web.Models.Libro
+
+@{
+    ViewData["Title"] = "Eliminar Libro";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="d-flex align-items-center mb-3">
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h2 class="h4 fw-bold mb-0 text-danger">Retirar Libro del Catálogo</h2>
+                <span class="text-muted small">Confirmación para dar de baja el ejemplar de las opciones activas</span>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-danger-subtle">
+            <div class="card-body p-4">
+                <div class="alert alert-warning d-flex align-items-start mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill fs-5 me-2 text-warning flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <div class="fw-semibold">¿Está seguro de retirar este libro?</div>
+                        <div class="small">El libro dejará de mostrarse en el catálogo principal y no estará disponible para nuevos préstamos.</div>
+                    </div>
+                </div>
+
+                <div class="bg-light rounded p-3 mb-4 border">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Título</span>
+                            <span class="fs-5 fw-bold text-dark">@Model.Titulo</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-semibold d-block">ISBN</span>
+                            <span class="font-monospace small">@Model.ISBN</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Autor</span>
+                            <span>@(Model.AutorNombre ?? "No asignado")</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Ejemplares</span>
+                            <span>@Model.Ejemplares unidades</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Identificador</span>
+                            <span class="text-muted font-monospace">#@Model.LibroId</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form asp-action="Delete" asp-route-id="@Model.LibroId" method="post" class="d-flex justify-content-between align-items-center">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="libroId" value="@Model.LibroId" />
+                    
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="bi bi-trash3"></i> Confirmar Eliminación
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

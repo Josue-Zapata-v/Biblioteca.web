@@ -1,0 +1,140 @@
+@model IEnumerable<Biblioteca.Web.Models.PrestamoReporte>
+
+@{
+    ViewData["Title"] = "Reporte de Préstamos";
+    var desde = ViewData["Desde"] as string;
+    var hasta = ViewData["Hasta"] as string;
+    var tieneFiltro = !string.IsNullOrEmpty(desde) || !string.IsNullOrEmpty(hasta);
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1 text-dark">Reporte de Préstamos</h1>
+        <p class="text-muted small mb-0">Seguimiento de préstamos, entregas y estados de devolución por fecha</p>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-funnel text-primary me-2"></i>
+            <span class="fw-semibold text-dark">Filtrar por Rango de Fechas</span>
+        </div>
+    </div>
+    <div class="card-body p-3">
+        <form asp-action="Reporte" method="get" class="row g-3 align-items-end">
+            <div class="col-sm-5 col-md-4">
+                <label for="desde" class="form-label">
+                    <i class="bi bi-calendar-event me-1 text-muted"></i>Fecha Desde:
+                </label>
+                <input type="date" id="desde" name="desde" value="@desde" class="form-control" />
+            </div>
+            <div class="col-sm-5 col-md-4">
+                <label for="hasta" class="form-label">
+                    <i class="bi bi-calendar-event me-1 text-muted"></i>Fecha Hasta:
+                </label>
+                <input type="date" id="hasta" name="hasta" value="@hasta" class="form-control" />
+            </div>
+            <div class="col-sm-2 col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">
+                    <i class="bi bi-search"></i> Filtrar
+                </button>
+                @if (tieneFiltro)
+                {
+                    <a asp-action="Reporte" class="btn btn-outline-secondary" title="Limpiar rango de fechas">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 80px;">Préstamo</th>
+                    <th scope="col">Socio Lector</th>
+                    <th scope="col">Libro Prestado</th>
+                    <th scope="col" style="width: 140px;">Fecha Préstamo</th>
+                    <th scope="col" style="width: 140px;">Fecha Límite</th>
+                    <th scope="col" style="width: 140px;">Devolución</th>
+                    <th scope="col" style="width: 130px;" class="text-end">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        var vencido = item.FechaLimite < DateTime.Today && item.Estado == "Pendiente";
+                        <tr>
+                            <td class="text-secondary small font-monospace">#@item.PrestamoId</td>
+                            <td>
+                                <div class="fw-semibold text-dark">
+                                    <i class="bi bi-person me-1 text-muted"></i>@item.SocioNombre
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-secondary">@item.LibroTitulo</span>
+                            </td>
+                            <td class="font-monospace small">@item.FechaPrestamo.ToString("yyyy-MM-dd")</td>
+                            <td class="font-monospace small">
+                                <span class="@(vencido ? "text-danger fw-bold" : "")">
+                                    @item.FechaLimite.ToString("yyyy-MM-dd")
+                                    @if (vencido)
+                                    {
+                                        <i class="bi bi-exclamation-circle text-danger ms-1" title="Vencido"></i>
+                                    }
+                                </span>
+                            </td>
+                            <td class="font-monospace small text-muted">
+                                @(item.FechaDevolucion.HasValue ? item.FechaDevolucion.Value.ToString("yyyy-MM-dd") : "—")
+                            </td>
+                            <td class="text-end">
+                                @if (item.Estado == "Devuelto")
+                                {
+                                    <span class="badge badge-soft-success rounded-pill px-2.5 py-1">
+                                        <i class="bi bi-check-circle me-1"></i>Devuelto
+                                    </span>
+                                }
+                                else if (item.Estado == "Pendiente")
+                                {
+                                    <span class="badge badge-soft-warning rounded-pill px-2.5 py-1">
+                                        <i class="bi bi-clock me-1"></i>Pendiente
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-soft-secondary rounded-pill px-2.5 py-1">
+                                        @item.Estado
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="bi bi-file-earmark-bar-graph"></i>
+                                </div>
+                                <h6 class="fw-semibold text-secondary mb-1">Sin registros de préstamos</h6>
+                                <p class="text-muted small mb-0">
+                                    @(tieneFiltro 
+                                        ? "No se hallaron préstamos registrados dentro del rango de fechas especificado." 
+                                        : "No existen registros de préstamos en la base de datos.")
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
